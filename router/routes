@@ -1,0 +1,14 @@
+package router
+
+import (
+	"github.com/labstack/echo/v4"
+)
+
+func Routes(e *echo.Echo) {
+	e.POST("/sub", controller.db.SUB)
+	e.POST("/add", db.ADD)
+	e.POST("/mul", db.MUL)
+	e.POST("/mod", db.MOD)
+	e.POST("/pow", db.POW)
+	e.POST("/div", db.DIV)
+}

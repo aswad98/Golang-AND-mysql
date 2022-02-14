@@ -1,8 +1,8 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	"hello/router"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -22,47 +22,48 @@ func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-type DBConnect struct {
-	DB *sql.DB
-}
+// type DBConnect struct {
+// 	DB *sql.DB
+// }
 
-func DbConnect() *DBConnect {
-	DB, err := sql.Open("mysql", "database:Aswad_database@123@tcp(127.0.0.1:3306)/calculatorDB")
-	if err != nil {
-		panic(err.Error())
-	}
+// func DbConnect() *DBConnect {
+// 	DB, err := sql.Open("mysql", "database:Aswad_database@123@tcp(127.0.0.1:3306)/calculatorDB")
+// 	if err != nil {
+// 		panic(err.Error())
+// 	}
 
-	err = DB.Ping()
-	if err != nil {
-		fmt.Println(err.Error())
-	} else {
-		fmt.Println("connected")
-	}
+// 	err = DB.Ping()
+// 	if err != nil {
+// 		fmt.Println(err.Error())
+// 	} else {
+// 		fmt.Println("connected")
+// 	}
 
-	return &DBConnect{
-		DB: DB,
-	}
+// 	return &DBConnect{
+// 		DB: DB,
+// 	}
 
-}
+// }
 
 func main() {
 	// Echo instan(["AUTHorization"])
 	e := echo.New()
 	// DbConnect()
-	db := DbConnect()
 
 	// // Middleware
 
 	// e.Use(middleware.Recover())
 	e.Use(ServerHeader)
+	router.Routes(e)
 	// Routes
+
 	//e.POST("/", hello)
-	e.POST("/sub", db.SUB)
-	e.POST("/add", db.ADD)
-	e.POST("/mul", db.MUL)
-	e.POST("/mod", db.MOD)
-	e.POST("/pow", db.POW)
-	e.POST("/div", db.DIV)
+	// e.POST("/sub", db.SUB)
+	// e.POST("/add", db.ADD)
+	// e.POST("/mul", db.MUL)
+	// e.POST("/mod", db.MOD)
+	// e.POST("/pow", db.POW)
+	// e.POST("/div", db.DIV)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
@@ -75,205 +76,196 @@ func main() {
 	return c.String(http.StatusOK, "Hello, World!")
 }*/
 
-type Input struct {
-	Num1 int `json:"number1"`
-	Num2 int `json:"number2"`
-}
+// func (db *DBConnect) ADD(c echo.Context) error {
+// 	n := new(models.Input)
 
-type Response struct {
-	Result int `json:"result"`
-}
+// 	if err := c.Bind(n); err != nil {
+// 		return err
+// 	}
+// 	add := n.Num1 + n.Num2
+// 	result := models.Response{
+// 		add,
+// 	}
 
-func (db *DBConnect) ADD(c echo.Context) error {
-	n := new(Input)
+// 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
+// 	stmt, err := db.DB.Prepare(sql)
+// 	if err != nil {
+// 		fmt.Print(err.Error())
+// 	}
 
-	if err := c.Bind(n); err != nil {
-		return err
-	}
-	add := n.Num1 + n.Num2
-	result := Response{
-		add,
-	}
+// 	defer stmt.Close()
 
-	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
-	stmt, err := db.DB.Prepare(sql)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+// 	_, err2 := stmt.Exec(n.Num1, n.Num2, add, "+")
 
-	defer stmt.Close()
+// 	if err2 != nil {
+// 		panic(err2)
+// 	}
 
-	_, err2 := stmt.Exec(n.Num1, n.Num2, add, "+")
+// 	return c.JSON(http.StatusOK, result)
+// }
 
-	if err2 != nil {
-		panic(err2)
-	}
+// func (db *DBConnect) MUL(c echo.Context) error {
+// 	n := new(models.Input)
 
-	return c.JSON(http.StatusOK, result)
-}
+// 	if err := c.Bind(n); err != nil {
+// 		return err
+// 	}
+// 	if n.Num1 == 0 || n.Num2 == 0 {
+// 		c.JSON(http.StatusForbidden, "ANY INPUT IS ZERO THE RESULT IS ZERO")
+// 	}
+// 	mul := n.Num1 * n.Num2
+// 	result := Response{
+// 		mul,
+// 	}
 
-func (db *DBConnect) MUL(c echo.Context) error {
-	n := new(Input)
+// 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
+// 	stmt, err := db.DB.Prepare(sql)
+// 	if err != nil {
+// 		fmt.Print(err.Error())
+// 	}
 
-	if err := c.Bind(n); err != nil {
-		return err
-	}
-	if n.Num1 == 0 || n.Num2 == 0 {
-		c.JSON(http.StatusForbidden, "ANY INPUT IS ZERO THE RESULT IS ZERO")
-	}
-	mul := n.Num1 * n.Num2
-	result := Response{
-		mul,
-	}
+// 	defer stmt.Close()
 
-	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
-	stmt, err := db.DB.Prepare(sql)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+// 	_, err2 := stmt.Exec(n.Num1, n.Num2, mul, "*")
 
-	defer stmt.Close()
+// 	if err2 != nil {
+// 		panic(err2)
+// 	}
 
-	_, err2 := stmt.Exec(n.Num1, n.Num2, mul, "*")
+// 	return c.JSON(http.StatusOK, result)
+// }
 
-	if err2 != nil {
-		panic(err2)
-	}
+// func (db *DBConnect) SUB(c echo.Context) error {
+// 	n := new(Input)
 
-	return c.JSON(http.StatusOK, result)
-}
+// 	if err := c.Bind(n); err != nil {
+// 		return err
+// 	}
+// 	sub := n.Num1 - n.Num2
+// 	result := Response{
+// 		sub,
+// 	}
 
-func (db *DBConnect) SUB(c echo.Context) error {
-	n := new(Input)
+// 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
+// 	stmt, err := db.DB.Prepare(sql)
+// 	if err != nil {
+// 		fmt.Print(err.Error())
+// 	}
 
-	if err := c.Bind(n); err != nil {
-		return err
-	}
-	sub := n.Num1 - n.Num2
-	result := Response{
-		sub,
-	}
+// 	defer stmt.Close()
 
-	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
-	stmt, err := db.DB.Prepare(sql)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+// 	_, err2 := stmt.Exec(n.Num1, n.Num2, sub, "-")
 
-	defer stmt.Close()
+// 	if err2 != nil {
+// 		panic(err2)
+// 	}
 
-	_, err2 := stmt.Exec(n.Num1, n.Num2, sub, "-")
+// 	return c.JSON(http.StatusOK, result)
+// }
+// func (db *DBConnect) DIV(c echo.Context) error {
+// 	n := new(Input)
 
-	if err2 != nil {
-		panic(err2)
-	}
+// 	if err := c.Bind(n); err != nil {
+// 		return err
+// 	}
+// 	if n.Num2 == 0 {
+// 		c.JSON(http.StatusForbidden, "INVALID INPUT OF NUMBER 2:")
+// 	}
+// 	div := n.Num1 / n.Num2
+// 	result := Response{
+// 		div,
+// 	}
 
-	return c.JSON(http.StatusOK, result)
-}
-func (db *DBConnect) DIV(c echo.Context) error {
-	n := new(Input)
+// 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
+// 	stmt, err := db.DB.Prepare(sql)
+// 	if err != nil {
+// 		fmt.Print(err.Error())
+// 	}
 
-	if err := c.Bind(n); err != nil {
-		return err
-	}
-	if n.Num2 == 0 {
-		c.JSON(http.StatusForbidden, "INVALID INPUT OF NUMBER 2:")
-	}
-	div := n.Num1 / n.Num2
-	result := Response{
-		div,
-	}
+// 	defer stmt.Close()
 
-	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
-	stmt, err := db.DB.Prepare(sql)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+// 	_, err2 := stmt.Exec(n.Num1, n.Num2, div, "/")
 
-	defer stmt.Close()
+// 	if err2 != nil {
+// 		panic(err2)
+// 	}
 
-	_, err2 := stmt.Exec(n.Num1, n.Num2, div, "/")
+// 	return c.JSON(http.StatusOK, result)
+// }
 
-	if err2 != nil {
-		panic(err2)
-	}
+// func (db *DBConnect) MOD(c echo.Context) error {
+// 	n := new(Input)
+// 	if err := c.Bind(n); err != nil {
+// 		return err
+// 	}
+// 	MOD := n.Num1 % n.Num2
+// 	result := Response{
+// 		MOD,
+// 	}
 
-	return c.JSON(http.StatusOK, result)
-}
+// 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
+// 	stmt, err := db.DB.Prepare(sql)
+// 	if err != nil {
+// 		fmt.Print(err.Error())
+// 	}
 
-func (db *DBConnect) MOD(c echo.Context) error {
-	n := new(Input)
-	if err := c.Bind(n); err != nil {
-		return err
-	}
-	MOD := n.Num1 % n.Num2
-	result := Response{
-		MOD,
-	}
+// 	defer stmt.Close()
 
-	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
-	stmt, err := db.DB.Prepare(sql)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+// 	_, err2 := stmt.Exec(n.Num1, n.Num2, MOD, "%")
 
-	defer stmt.Close()
+// 	if err2 != nil {
+// 		panic(err2)
+// 	}
 
-	_, err2 := stmt.Exec(n.Num1, n.Num2, MOD, "%")
+// 	return c.JSON(http.StatusOK, result)
+// }
 
-	if err2 != nil {
-		panic(err2)
-	}
+// func (db *DBConnect) POW(c echo.Context) error {
+// 	n := new(Input)
+// 	if err := c.Bind(n); err != nil {
+// 		return err
+// 	}
+// 	if n.Num1 == 0 {
 
-	return c.JSON(http.StatusOK, result)
-}
+// 		c.JSON(http.StatusForbidden, "IF BASE IS ZERO THEN ANY VALUE OF POWER RESULT IS ALWAYS 0")
 
-func (db *DBConnect) POW(c echo.Context) error {
-	n := new(Input)
-	if err := c.Bind(n); err != nil {
-		return err
-	}
-	if n.Num1 == 0 {
+// 	}
+// 	if n.Num1 == 1 {
 
-		c.JSON(http.StatusForbidden, "IF BASE IS ZERO THEN ANY VALUE OF POWER RESULT IS ALWAYS 0")
+// 		c.JSON(http.StatusForbidden, "IF BASE IS 1 THEN ANY VALUE OF POWER RESULT IS ALWAYS 1")
+// 	}
 
-	}
-	if n.Num1 == 1 {
+// 	if n.Num2 == 0 {
+// 		c.JSON(http.StatusForbidden, "IF POWER IS ZERO THEN ANY VALUE OF BASE RESULT IS ALWAYS 1")
+// 	}
 
-		c.JSON(http.StatusForbidden, "IF BASE IS 1 THEN ANY VALUE OF POWER RESULT IS ALWAYS 1")
-	}
+// 	var pow int
+// 	pow = 1
+// 	for n.Num2 != 0 {
+// 		pow *= n.Num1
+// 		n.Num2 -= 1
+// 	}
 
-	if n.Num2 == 0 {
-		c.JSON(http.StatusForbidden, "IF POWER IS ZERO THEN ANY VALUE OF BASE RESULT IS ALWAYS 1")
-	}
+// 	result := Response{
+// 		pow,
+// 	}
 
-	var pow int
-	pow = 1
-	for n.Num2 != 0 {
-		pow *= n.Num1
-		n.Num2 -= 1
-	}
+// 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
+// 	stmt, err := db.DB.Prepare(sql)
+// 	if err != nil {
+// 		fmt.Print(err.Error())
+// 	}
 
-	result := Response{
-		pow,
-	}
+// 	defer stmt.Close()
 
-	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
-	stmt, err := db.DB.Prepare(sql)
-	if err != nil {
-		fmt.Print(err.Error())
-	}
+// 	_, err2 := stmt.Exec(n.Num1, n.Num2, pow, "n^m")
 
-	defer stmt.Close()
+// 	if err2 != nil {
+// 		panic(err2)
+// 	}
 
-	_, err2 := stmt.Exec(n.Num1, n.Num2, pow, "n^m")
-
-	if err2 != nil {
-		panic(err2)
-	}
-
-	return c.JSON(http.StatusOK, result)
-}
+// 	return c.JSON(http.StatusOK, result)
+// }
 
 // func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
 // 	return func(c echo.Context) error {
