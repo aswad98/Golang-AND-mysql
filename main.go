@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"hello/router"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -36,7 +35,11 @@ func ServerHeader(next echo.HandlerFunc) echo.HandlerFunc {
 // 	if err != nil {
 // 		fmt.Println(err.Error())
 // 	} else {
-// 		fmt.Println("connected")
+// 		fmt.Println("connected")	_, err2 := stmt.Exec(n.Num1, n.Num2, add, "+")
+
+// if err2 != nil {
+// 	panic(err2)
+// }
 // 	}
 
 // 	return &DBConnect{
@@ -54,8 +57,9 @@ func main() {
 
 	// e.Use(middleware.Recover())
 	e.Use(ServerHeader)
-	router.Routes(e)
-	// Routes
+	// controller.DBConnect
+	// router.Routes(e)
+	// // Routes
 
 	//e.POST("/", hello)
 	// e.POST("/sub", db.SUB)

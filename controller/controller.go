@@ -8,6 +8,14 @@ import (
 	"github.com/labstack/echo"
 )
 
+type Caldata struct {
+	ID        int
+	NUMBER1   int
+	NUMBER2   int
+	OPERATION string
+	RESULT    int
+}
+
 func (db *DBConnect) ADD(c echo.Context) error {
 	// conn := database.DbConnect()
 	n := new(models.Input)
@@ -16,9 +24,9 @@ func (db *DBConnect) ADD(c echo.Context) error {
 		return err
 	}
 	add := n.Num1 + n.Num2
-	result := models.Response{
-		add,
-	}
+	// result := models.Response{
+	// 	add,
+	// }
 
 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
 	stmt, err := db.conn.Prepare(sql)
@@ -34,7 +42,7 @@ func (db *DBConnect) ADD(c echo.Context) error {
 		panic(err2)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, add)
 }
 
 func (db *DBConnect) MUL(c echo.Context) error {
@@ -47,9 +55,9 @@ func (db *DBConnect) MUL(c echo.Context) error {
 		c.JSON(http.StatusForbidden, "ANY INPUT IS ZERO THE RESULT IS ZERO")
 	}
 	mul := n.Num1 * n.Num2
-	result := models.Response{
-		mul,
-	}
+	// result := models.Response{
+	// 	mul,
+	// }
 
 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
 	stmt, err := db.conn.Prepare(sql)
@@ -65,7 +73,7 @@ func (db *DBConnect) MUL(c echo.Context) error {
 		panic(err2)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, mul)
 }
 
 func (db *DBConnect) SUB(c echo.Context) error {
@@ -75,9 +83,9 @@ func (db *DBConnect) SUB(c echo.Context) error {
 		return err
 	}
 	sub := n.Num1 - n.Num2
-	result := models.Response{
-		sub,
-	}
+	// result := models.Response{
+	// 	sub,
+	// }
 
 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
 	stmt, err := db.conn.Prepare(sql)
@@ -93,7 +101,7 @@ func (db *DBConnect) SUB(c echo.Context) error {
 		panic(err2)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, sub)
 }
 func (db *DBConnect) DIV(c echo.Context) error {
 	n := new(models.Input)
@@ -105,9 +113,9 @@ func (db *DBConnect) DIV(c echo.Context) error {
 		c.JSON(http.StatusForbidden, "INVALID INPUT OF NUMBER 2:")
 	}
 	div := n.Num1 / n.Num2
-	result := models.Response{
-		div,
-	}
+	// result := models.Response{
+	// 	div,
+	// }
 
 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
 	stmt, err := db.conn.Prepare(sql)
@@ -123,7 +131,7 @@ func (db *DBConnect) DIV(c echo.Context) error {
 		panic(err2)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, div)
 }
 
 func (db *DBConnect) MOD(c echo.Context) error {
@@ -132,9 +140,9 @@ func (db *DBConnect) MOD(c echo.Context) error {
 		return err
 	}
 	MOD := n.Num1 % n.Num2
-	result := models.Response{
-		MOD,
-	}
+	// result := models.Response{
+	// 	MOD,
+	// }
 
 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
 	stmt, err := db.conn.Prepare(sql)
@@ -150,7 +158,7 @@ func (db *DBConnect) MOD(c echo.Context) error {
 		panic(err2)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, MOD)
 }
 
 func (db *DBConnect) POW(c echo.Context) error {
@@ -179,9 +187,9 @@ func (db *DBConnect) POW(c echo.Context) error {
 		n.Num2 -= 1
 	}
 
-	result := models.Response{
-		pow,
-	}
+	// result := models.Response{
+	// 	pow,
+	// }
 
 	sql := "INSERT INTO Calculator(NUMBER1, NUMBER2,RESULT,OPERATION) VALUES( ?, ?, ?,?)"
 	stmt, err := db.conn.Prepare(sql)
@@ -197,5 +205,5 @@ func (db *DBConnect) POW(c echo.Context) error {
 		panic(err2)
 	}
 
-	return c.JSON(http.StatusOK, result)
+	return c.JSON(http.StatusOK, pow)
 }
